@@ -13,6 +13,13 @@ Le code principal est dans le notebook `Pipeline_SPOT.ipynb`, conçu pour foncti
 
 ---
 
+### Démo
+
+
+https://github.com/user-attachments/assets/15f06b44-4fe9-4fe4-a9e8-3e1d3a38bda8
+
+
+
 ### Objectifs pédagogiques
 
 - **Comprendre une pipeline de vision** de bout en bout (capture → détection → prétraitement → entraînement → inférence).
