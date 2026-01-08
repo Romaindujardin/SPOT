@@ -23,20 +23,13 @@ https://github.com/user-attachments/assets/15f06b44-4fe9-4fe4-a9e8-3e1d3a38bda8
 ### Objectifs pédagogiques
 
 - **Comprendre une pipeline de vision** de bout en bout (capture → détection → prétraitement → entraînement → inférence).
-- Mettre en évidence la différence entre :
-  - **détection de visage** (localiser un visage),
-  - **reconnaissance** (identifier _qui_ est la personne).
-- Illustrer des problématiques réelles :
-  - **décalage de domaine** (photos smartphone vs webcam),
-  - **calibration de seuils**,
-  - **robustesse au multi-visages**,
-  - **qualité/latence en environnement Colab**.
+- Faire attention à la différence entre **détection de visage** (localiser un visage) et  **reconnaissance** (identifier _qui_ est la personne).
 
 ---
 
-### Architecture logique (métier)
+### Architecture logique 
 
-Le projet commence par une structure simple :
+Le dataset a une structure simple :
 
 - **Professeur**
   - **Cours / Classe**
@@ -52,7 +45,7 @@ Cette liste `ELEVES_ATTENDUS` est la référence utilisée pour :
 
 ### Méthodologie de reconnaissance faciale (vision)
 
-SPOT suit une pipeline classique :
+SPOT suit la pipeline suivante :
 
 #### 1) Capture et dataset (WEBCAM)
 
@@ -61,16 +54,9 @@ Le projet privilégie un dataset construit via la **webcam Colab**, car c’est 
 - Un dossier par élève : `/content/dataset_crop/<eleve>/`
 - Le dataset est alimenté via des **boutons dynamiques** (un bouton par élève chargé).
 
-**Pourquoi webcam plutôt que photos iPhone ?**
-Le modèle utilisé (LBPH) est très sensible au “style” d’image (capteur, netteté, contraste, bruit, compression). Mélanger smartphone et webcam crée un **domain shift** qui dégrade fortement les distances en live.
-
 #### 2) Détection de visage (Haar Cascade)
 
-La détection utilise un classifieur Haar (`haarcascade_frontalface_default.xml`) :
-
-- rapide,
-- simple à expliquer en cours,
-- suffisant pour une démo.
+La détection utilise un classifieur Haar (`haarcascade_frontalface_default.xml`).
 
 Limite : moins robuste que des détecteurs modernes (DNN/MTCNN/RetinaFace), notamment en multi-visages, angles marqués ou faible lumière.
 
@@ -86,7 +72,7 @@ Le prétraitement standardise les entrées :
 
 **CLAHE** (_Contrast Limited Adaptive Histogram Equalization_) est une version “locale” de l’égalisation d’histogramme :
 
-- Elle améliore le contraste **région par région** au lieu d’appliquer une correction globale.
+- Elle améliore le contraste région par région au lieu d’appliquer une correction globale.
 - Elle aide beaucoup lorsque la lumière est :
   - inégale (ombre sur le visage),
   - trop faible,
@@ -94,7 +80,7 @@ Le prétraitement standardise les entrées :
 
 La version “contrast limited” limite l’amplification du bruit (sinon une égalisation locale peut rendre le grain très visible).
 
-Dans SPOT, CLAHE sert surtout à rendre les **textures** plus comparables entre images d’un même individu.
+Dans SPOT, CLAHE sert surtout à rendre les textures plus comparables entre images d’un même individu.
 
 #### 4) Modèle de reconnaissance (LBPH)
 
@@ -123,12 +109,7 @@ LBPH retourne une **distance** (plus petit = meilleur). Pour décider si une pr�
 
 #### Pourquoi calibrer ?
 
-La distance LBPH dépend fortement :
-
-- de la caméra,
-- de la taille du visage dans la frame,
-- du nombre de visages (solo vs 2 personnes dans le cadre),
-- de la lumière.
+La distance LBPH dépend fortement de la caméra,de la taille du visage dans la frame,du nombre de visages (solo vs 2 personnes dans le cadre) et de la lumière.
 
 SPOT inclut une cellule de **Calibration LIVE** qui mesure les distances réelles (webcam) et propose un seuil du type :
 
@@ -162,13 +143,7 @@ Cela améliore :
 
 ### Rapport final
 
-En fin de session, SPOT calcule :
-
-- retard (arrivée),
-- statut final (présent / absent / parti),
-- temps total d’absence (retard + sortie anticipée),
-
-et produit un tableau récapitulatif.
+En fin de session, SPOT calcule le retard (arrivée), le statut final (présent / absent / parti) et le temps total d’absence (retard + sortie anticipée) et produit un tableau récapitulatif.
 
 ---
 
@@ -178,13 +153,9 @@ et produit un tableau récapitulatif.
 
 Sur Colab, **LBPH** requiert `opencv-contrib-python-headless` (sinon `cv2.face` n’existe pas).
 
-Le notebook inclut une cellule “à exécuter en premier” qui :
+Le notebook inclut une cellule “à exécuter en premier” qui désinstalle les paquets OpenCV conflictuels, réinstalle `opencv-contrib-python-headless` et vérifie la présence de `cv2.face`.
 
-- désinstalle les paquets OpenCV conflictuels,
-- réinstalle `opencv-contrib-python-headless`,
-- vérifie la présence de `cv2.face`.
-
-#### Étapes recommandées (démo)
+### Étapes recommandées pour tester le projet
 
 - **Redémarrer le runtime** (Colab).
 - Exécuter la cellule d’installation OpenCV (tout début du notebook).
@@ -213,14 +184,6 @@ Ce “pont” ajoute de la latence. Le notebook limite donc :
 - le FPS,
 
 pour rendre le flux plus fluide sans nuire à la détection.
-
-#### Limites de sécurité / éthique
-
-La reconnaissance faciale est une technologie sensible :
-
-- attention au consentement,
-- attention aux biais (dataset, conditions),
-- attention à la conformité (RGPD, usage en contexte scolaire réel).
 
 Ce projet est **pédagogique** et destiné à une démonstration technique.
 
