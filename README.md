@@ -139,6 +139,17 @@ Cela améliore :
 
 ---
 
+### Gestion du Temps : Simulation vs Réalité
+
+Dans le notebook de démonstration, les **constantes de temps** sont volontairement réduites à l'extrême (quelques secondes) pour permettre de visualiser l'ensemble du cycle (Arrivée → Présence → Départ → Rapport) instantanément.
+
+* **`BUFFER_TIME` (ex: 5.0s) :** C'est le délai avant de considérer un élève comme "Parti" s'il n'est plus détecté. En conditions réelles, cette valeur serait réglée sur plusieurs minutes (ex: 10 ou 15 min) pour ne pas sanctionner une simple perte de focus de la caméra ou une micro-coupure.
+* **Tolérance Retard :** La démo comptabilise le retard à la seconde près. Un système réel inclurait évidemment une marge de tolérance (ex: 5 minutes) avant de comptabiliser un retard officiel.
+
+Ces variables sont définies au début du script et sont **entièrement configurables** pour passer d'un mode "Démo rapide" à un mode "Production".
+
+---
+
 ### Rapport final
 
 En fin de session, SPOT calcule le retard (arrivée), le statut final (présent / absent / parti) et le temps total d’absence (retard + sortie anticipée) et produit un tableau récapitulatif.
