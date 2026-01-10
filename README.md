@@ -113,9 +113,7 @@ La distance LBPH dépend fortement de la caméra,de la taille du visage dans la 
 
 SPOT inclut une cellule de **Calibration LIVE** qui mesure les distances réelles (webcam) et propose un seuil du type :
 
-\[
-\text{seuil} \approx p95 + 10
-\]
+$$\text{seuil} \approx p95 + 10$$
 
 où \(p95\) est le 95e percentile des distances observées.
 
